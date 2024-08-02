@@ -1,0 +1,22 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+
+###
+GET localhost:3000/todo
+###
+
+# curl -X POST http://localhost:3000/todo
+#-H "Content-Type: application/json"
+#-d '{"title": "뒹굴거리기"}'
+POST http://localhost:3000/todo
+Content-Type: application/json
+
+{
+  "title": "뒹굴거리기"
+}
+
+###
+
