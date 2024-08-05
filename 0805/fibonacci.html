@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>fibonacci</title>
+</head>
+<body>
+<script>
+    var prev = 0, cur = 1, next, total = 0, sicStr = ""
+    for (; cur <= 21; total += cur, next = prev + cur, prev = cur, cur = next) {
+        if (cur >= 21)
+            sicStr += cur + '='
+        else
+            sicStr += cur + '+'
+    }
+    console.log(sicStr + total)
+</script>
+</body>
+</html>
