@@ -1,110 +1,112 @@
-const http = require('http')
-const express = require('express')
-const path = require("node:path");
+const http = require('http');
+const express = require('express');
+const path = require("path");
 const bodyParser = require("body-parser");
-const app = express()
-const port = process.env.PORT || 3000
-const cors = require("cors")
+const fs = require('fs');
+const multer = require('multer');
+const app = express();
+const port = process.env.PORT || 3000;
+const cors = require("cors");
+const dataFilePath = path.join(__dirname, 'public/data/memberList.json');
 
-app.set('views', path.join(__dirname + 'views'))
-app.set('view engine', 'ejs')
+// 정적 파일 제공을 위한 디렉토리 설정
+app.use('/img', express.static(path.join(__dirname, 'public/img')));
+app.use(express.static(path.join(__dirname, '../html')));
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-app.use(cors())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cors());
 
-app.get('/', function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'})
-    res.end('안녕')
-})
-
-//localhost:3000/data?user=HONG&message=LOVE
-app.get('/data', function (req, res) {
-    const user = req.query.user
-    const message = req.query.message
-
-    const jsonData = {
-        user,
-        message
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'server/public/img/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
     }
+});
 
-    res.send(jsonData)
-})
+const upload = multer({ storage: storage });
 
-// 임시 todoList
-const todoList = [
-    {no: 101, title: '자연 보호하기', done: false},
-    {no: 102, title: '집에 가고 싶기', done: true},
-    {no: 103, title: '산책가기', done: false},
-    {no: 104, title: '저녁 요리하기', done: false},
-    {no: 105, title: '시원하게 샤워하기', done: false},
-    {no: 106, title: '뒹굴거리기', done: false},
-]
-var noSeq = 107
-
-app.get('/todo/search', function (req, res) {
-    var keyWord = req.query.keyWord
-    var newTodoList = todoList.filter((todo) => {
-        return todo.title.includes(keyWord)
-    })
-
-    res.send(newTodoList)
-})
-
-app.get('/todo', function (req, res) {
-    if (req.query.no)
-    {
-        var no = parseInt(req.query.no)
-        var idx = todoList.findIndex((todo) => {
-            return parseInt(todo.no) === no
-        })
-
-        if (idx > -1) {
-            res.send(todoList[idx])
+app.get('/members', function (req, res) {
+    fs.readFile(dataFilePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).send('Error reading data file');
         }
-        else {
-            res.send(null)
+        res.send(JSON.parse(data));
+    });
+});
+
+app.post('/addMember', upload.single('image'), function (req, res) {
+    fs.readFile(dataFilePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).send('Error reading data file');
         }
-        return
-    }
-    res.send(todoList)
-})
 
-app.post('/todo', function (req, res) {
-    var title = req.body.title
-    todoList.push({no: noSeq++, title, done: false})
-    res.send(todoList)
-})
+        let jsonData = JSON.parse(data);
+        let newMember = {
+            check: false,
+            num: jsonData.numSeq++,
+            image: req.file ? '/img/' + req.file.filename : '',
+            name: req.body.name,
+            dept: req.body.dept,
+            level: req.body.level,
+            replyList: []
+        };
 
-app.put('/todo', function (req, res) {
+        jsonData.memberList.push(newMember);
 
-    const newTodo = {
-        ...req.body
-    }
+        fs.writeFile(dataFilePath, JSON.stringify(jsonData, null, 2), (err) => {
+            if (err) {
+                return res.status(500).send('Error writing data file');
+            }
+            res.send(jsonData);
+        });
+    });
+});
 
-    var todo = todoList.find(todo => {
-        return newTodo.no === todo.no
-    })
+app.post('/editMember', function (req, res) {
+    fs.readFile(dataFilePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).send('Error reading data file');
+        }
 
-    if (todo !== undefined) {
-        todo = newTodo
-    }
-    res.send(todoList)
-})
+        let jsonData = JSON.parse(data);
+        let member = jsonData.memberList.find(member => member.num === req.body.num);
+        if (member) {
+            member.name = req.body.name;
+            member.dept = req.body.dept;
+            member.level = req.body.level;
+        }
 
-app.delete('/todo', function (req, res) {
-    var no = parseInt(req.query.no)
-    var idx = todoList.findIndex(todo => {
-        return todo.no === no
-    })
-    if (idx > -1) {
-        todoList.splice(idx, 1)
-    }
-    res.send(todoList)
-})
+        fs.writeFile(dataFilePath, JSON.stringify(jsonData, null, 2), (err) => {
+            if (err) {
+                return res.status(500).send('Error writing data file');
+            }
+            res.send(jsonData);
+        });
+    });
+});
 
-const server = http.createServer(app)
+app.post('/deleteMember', function (req, res) {
+    fs.readFile(dataFilePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).send('Error reading data file');
+        }
+
+        let jsonData = JSON.parse(data);
+        jsonData.memberList = jsonData.memberList.filter(member => member.num !== parseInt(req.body.num, 10));
+
+        fs.writeFile(dataFilePath, JSON.stringify(jsonData, null, 2), (err) => {
+            if (err) {
+                return res.status(500).send('Error writing data file');
+            }
+            res.send(jsonData);
+        });
+    });
+});
+
+const server = http.createServer(app);
 server.listen(port, () => {
-    console.log(`Listening on port ${port}`)
-})
-
+    console.log(`Listening on port ${port}`);
+});

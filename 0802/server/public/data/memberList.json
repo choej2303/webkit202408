@@ -1,0 +1,26 @@
+{
+  "numSeq": 1050,
+  "memberList": [
+    {
+      "check": false,
+      "num": 1043,
+      "image": "img_1.png",
+      "name": "홍길동",
+      "dept": "개발",
+      "level": "대리",
+      "rSeq": 3,
+      "replyList": [
+        {
+          "num": 1,
+          "content": "멋진 사진입니다",
+          "name": "박문수"
+        },
+        {
+          "num": 2,
+          "content": "좋아요^^ 퍼가요~",
+          "name": "일지매"
+        }
+      ]
+    }
+  ]
+}
