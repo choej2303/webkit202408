@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .done {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+<h1>Todo List</h1>
+<label for="todo">할 일:</label>
+<input type="text" id="todo">
+<input type="submit" value="SAVE" id="submit">
+<ul id="list">
+
+</ul>
+</body>
+<script>
+    const todoList = [
+        {no: 1, title: "hello", done: false}
+    ]
+    let noSeq = 2
+
+    const submit = document.getElementById('submit')
+    const todo = document.getElementById('todo')
+    const list = document.getElementById('list')
+
+    submit.addEventListener('click', () => {
+        if (todo.value.trim() !== '') {
+
+            todoList.push({
+                no: noSeq++, title: todo.value, done: false
+            })
+            todo.value = ''
+            drawList()
+        }
+    })
+
+    function findIdx(todo) {
+        return todoList.findIndex(item => {
+            return item.no === todo.no
+        })
+    }
+
+    function drawList() {
+        console.dir(todoList)
+        list.innerHTML = ''
+        todoList.forEach(todo => {
+            let li = document.createElement('li')
+            li.style.listStyle = 'none'
+
+            let checkBox = document.createElement('input')
+            checkBox.setAttribute('type', 'checkBox')
+
+            let span = document.createElement('span')
+            span.innerText = todo.title
+
+            let delBtn = document.createElement('button')
+            delBtn.innerText = 'delete'
+
+            if (todo.done) {
+                checkBox.setAttribute('checked', 'checked')
+                span.className = 'done'
+            }
+
+            checkBox.addEventListener('change', () => {
+                let idx = findIdx(todo)
+                todoList[idx].done = !todoList[idx].done
+                drawList()
+            })
+
+            delBtn.addEventListener('click', (e) => {
+                e.stopPropagation()
+                let idx = findIdx(todo)
+                todoList.splice(idx, 1)
+                drawList()
+            })
+
+            li.appendChild(checkBox)
+            li.appendChild(span)
+            li.appendChild(delBtn)
+            list.appendChild(li)
+        })
+    }
+
+    drawList()
+</script>
+</html>
