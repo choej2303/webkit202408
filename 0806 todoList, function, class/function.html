@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Advanced JavaScript Function Example</title>
+</head>
+<body>
+<script>
+    // ES6 화살표 함수로 짝수만 추출하는 함수 정의
+    // https://www.w3schools.com/js/js_array_iteration.asp#mark_filter
+    Array.prototype.extractEvenArray = function () {
+        return numbers.filter(num => num % 2 === 0)
+    }
+
+    Array.prototype.extractOddArray = function () {
+        return numbers.filter(num => num % 2 === 1)
+    }
+
+    Array.prototype.print = function (mode) {
+        switch(mode) {
+            case 1 : document.write(this + "<br/>"); break;
+            case 2 : console.log(this);break;
+            case 3 : console.dir(this);break;
+            default:
+                document.write(this + "<br/>");
+                console.log(this);
+                console.dir(this);
+        }
+    }
+
+    // 입력 배열
+    const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    // 함수 호출하여 짝수 추출
+    const evenArray = numbers.extractEvenArray();
+    const oddArray = numbers.extractOddArray();
+
+    evenArray.print()
+    oddArray.print()
+</script>
+</body>
+</html>
