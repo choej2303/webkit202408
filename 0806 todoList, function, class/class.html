@@ -31,12 +31,15 @@
 
     // 과거 방식의 상속
     function Student(name, age, grade) {
-        this.name = name
-        this.age = age
+        People.call(this, name, age)
         this.grade = grade
     }
-    Student.prototype = new People()
-    Student.constructor = Student
+    Student.prototype = Object.create(People.prototype)
+    Student.prototype.constructor = Student
+    Student.prototype.display = function () {
+        People.prototype.display.call(this)
+        console.log(this.grade)
+    }
     const s1 = new Student('홍', 22, 3)
     s1.display()
 

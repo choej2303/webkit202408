@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>slotMachine</title>
+    <style>
+        #box {
+            border: 5px solid navy;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .newBox {
+            position: relative;
+            display: block;
+            width: 100px;
+            height: 100px;
+            border: 1px solid black;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .newBox ul {
+            position: absolute;
+            left: 0;
+            top: 0;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .newBox ul li {
+            border: 1px solid orange;
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            line-height: 100px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+<h1>파칭코 게임</h1>
+<button id="start">Start</button>
+<button id="stop">Stop</button>
+<div id="box"></div>
+<script>
+    const menu = ['햄버거', '체리', '피자', '7', '망고', '토마토', '사과', '수박', '바나나', '초콜릿']
+    let divBox = document.getElementById('box')
+    let startBtn = document.getElementById('start')
+    let stopBtn = document.getElementById('stop')
+
+    // Box 인스턴스를 저장할 배열
+    const boxInstances = [];
+
+    startBtn.addEventListener('click', function() {
+        boxInstances.forEach(function(box){
+            box.start(Math.floor(5 + Math.random()*20));
+        })
+    });
+
+    stopBtn.addEventListener('click', function () {
+        boxInstances.forEach(box => {
+            box.stop()
+        })
+    })
+
+    function Box() {}
+
+    Box.prototype.init = function () {
+        this.newBox = document.createElement('div')
+        this.ulElement = document.createElement('ul')
+        menu.forEach(item => {
+            const liElement = document.createElement('li')
+            liElement.innerText = item
+            this.ulElement.appendChild(liElement)
+        })
+        this.newBox.appendChild(this.ulElement)
+        this.newBox.className = 'newBox'
+        return this.newBox
+    }
+
+    Box.prototype.start = function(speed) {
+        // console.log("speed: ", speed)
+        this.ulElement.style.position = "absolute";
+        // Element의 좌표 움지임 확인
+        this.ulElement.style.left = "0px";
+        this.ulElement.style.top = "0px";
+        this.y = 0;
+        this.intervalRef = setInterval(() => {
+            this.y -= 10;
+            // this가 어떻게 바뀌는 확인 필수.
+            //console.log(this);
+            this.ulElement.style.top = this.y + "px";
+            if(this.y <= -900) {
+                this.y = 0;
+            }
+        }, speed);
+    }
+
+    Box.prototype.stop = function () {
+        clearInterval(this.intervalRef);
+        const stopInterval = setInterval(() => {
+            if (this.y % 100 !== 0) {
+                this.y -= 10;
+                this.ulElement.style.top = this.y + "px";
+                if (this.y <= -900) {
+                    this.y = 0;
+                }
+            } else {
+                clearInterval(stopInterval);
+            }
+        }, 200);
+    }
+
+    for (let i = 0; i < 9; i++) {
+        const box = new Box();
+        divBox.appendChild(box.init())
+        boxInstances.push(box);
+    }
+</script>
+</body>
+</html>
