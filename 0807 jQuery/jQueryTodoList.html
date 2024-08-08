@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jQueryTodoList</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<h1>todoList</h1>
+<input type="text" id="title">
+<button id="saveBtn">Save</button>
+<hr>
+<ul id="listArea"></ul>
+<script>
+    var cnt = 1
+    // innerHtml은 html(), innerText는 text(), value 속성은 val()
+    // 인자를 비우거나 하나만 쓰면 getter, 인자를 두 개를 쓰면 setter
+    $(function () {
+        $('#saveBtn').on({
+            'click': function () {
+                let title = $('#title')
+                if (title.text()) {
+                    $('#listArea').append(`
+<li style="list-style: none" data-no="${cnt++}">
+<input type="checkbox">
+<span>${title.text()}</span>
+<button class="delBtn">delete</button>
+<button class="editBtn">edit</button>
+</li>`)
+                    // on이나 bind 메서드를 이용하여 이벤트를 등록할 수 있음
+                    $('.delBtn').on('click', function (e) {
+                        console.log($(e.target).parent().find('span').text())
+                        console.log($(e.target).parent().data('no'))
+                        $(e.target).parent().html('')
+                    })
+                    title.text('')
+                } else {
+                    alert('내용을 입력하시오')
+                    title.focus()
+                }
+            }
+        })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery Example</title>
+    <!-- jQuery 라이브러리 로드 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // 자바스크립트는 $나 _와 같은 특수문자로 식별자 선언이 가능하다
+            console.log($ === jQuery)
+
+            console.log($('#header')[0])
+            console.log($('#header').get(0))
+
+            $('#header').css('color', 'red')
+            $('#header h2').css({
+                background : 'black'
+            })
+        })
+    </script>
+</head>
+<body>
+<div id="header">
+    <h1>Hello World!</h1>
+    <h2>오신 것을 환영합니다.</h2>
+</div>
+</body>
+</html>

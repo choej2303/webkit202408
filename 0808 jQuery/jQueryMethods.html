@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery에서 많이 사용되는 메서드</title>
+    <!--    script가 body 태그 위에 있으면 $(document).ready() 같은 진입점이 필요.-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        .redColor {
+            color: red;
+            text-decoration: underline;
+            font-size: 36pt;
+            font-weight: bold;
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1 class="heading">hello World!</h1>
+    <div class="navi">홈 | 프로필 | 갤러리</div>
+</div>
+<hr>
+<div>
+    <button id="transEnBtn">한글로 변환</button>
+    <button id="toggleListBtn">todoList 토글</button>
+    <hr>
+    <button id="addClassBtn">클래스 적용</button>
+    <button id="removeClassBtn">클래스 제거</button>
+    <button id="toggleClassBtn">토글 클래스</button>
+</div>
+<hr>
+<div>
+    제목: <input type="text" class="todoTitle">
+    <hr>
+    <ul class="todoList">
+        <li>코딩 하기</li>
+        <li>청소하기</li>
+        <li>밥하기</li>
+    </ul>
+</div>
+<!--text(), html(), val(), attr(), css() 등등..-->
+<script>
+    // ready()는 DOM 트리의 구조만 로드되어도 바로 실행됨
+    //  head 태그 아래에 있어도 jQuery 진입점을 쓰는 것이 좋다.
+    $(function () {
+
+        $('#transEnBtn').on('click', function (e) {
+            $('.heading').text('hello')
+            $('.navi').html('<a href="#">home</a> | <a href="#">profile</a> | <a href="#">gallery</a>')
+        })
+
+        $('.todoTitle').change(event => {
+            const newTitle = $(event.target)
+            $('.todoList').append(`<p>${newTitle.val()}</p>`)
+            // input일 때는 text가 아니라 val을 써야 함
+            newTitle.val('').focus()
+        })
+
+        $('#toggleListBtn').on('click', function () {
+            $('.todoList').toggle('300')
+        })
+
+        $('#addClassBtn').click(function (e) {
+            $('.todoList li').addClass('redColor')
+        })
+        $('#removeClassBtn').click(function (e) {
+            $('.todoList li').removeClass('redColor')
+        })
+        $('#toggleClassBtn').click(function () {
+            $('.todoList li').toggleClass('redColor')
+        })
+
+    })
+</script>
+</body>
+</html>

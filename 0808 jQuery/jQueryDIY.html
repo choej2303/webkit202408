@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery DIY</title>
+</head>
+<body>
+<button id="btn">
+    button
+</button>
+<script>
+    const $ = function (selector) {
+        const dom = document.querySelector(selector);
+
+        dom.css = function (property, value) {
+            console.log('dom.css() 호출');
+            dom.style[property] = value;
+            return dom;
+        };
+
+        dom.click = function(callBack) {
+            dom.onclick = callBack
+            console.log('dom.click() 호출');
+            return dom;
+        };
+
+        dom.posX = function (target) {
+            dom.style.position = 'relative';
+            dom.style.left = target + 'px';
+            return dom;
+        };
+
+        dom.posY = function (target) {
+            dom.style.position = 'relative';
+            dom.style.top = target + 'px';
+            return dom;
+        };
+
+        return dom;
+    };
+
+    $('#btn').css('color', 'red').click(function () {
+        console.log('버튼 클릭됨');
+        console.log(this);
+    }).posX(200).posY(50);
+</script>
+</body>
+</html>
