@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+    import ReactDOM from "react-dom/client";
+
+    const TodoList = () => {
+        return (<div>
+                <h2>TodoList</h2>
+                <p>
+                    <input type="text"/>
+                    <button>저장</button>
+                    {
+                        /*주석을 쓰려면 이렇게 중괄호 안에서*/
+                        <span>dssd</span>
+                    }
+                </p>
+            </div>
+        )
+    }
+
+    function Hello() {
+        return (
+            <div>
+                <h1>hello world!</h1>
+                <TodoList></TodoList>
+            </div>
+        )
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(Hello())
+</script>
+</body>
+</html>
