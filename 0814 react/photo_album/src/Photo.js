@@ -1,3 +1,4 @@
+
 const Photo = ({photo}) => {
     return (<div className="w3-row w3-margin">
 

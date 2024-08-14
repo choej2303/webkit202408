@@ -1,6 +1,11 @@
 import {useState} from "react";
-import './w3.css'
-import Photo from "./Photo";
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import PhotoList from "./pages/PhotoList";
+import Layout from "./pages/Layout";
+import Home from "./pages/Home";
+import NoPage from "./pages/NoPage";
+import Blogs from "./pages/Blogs";
+import Contact from "./pages/Contact";
 
 export default function App() {
     const [photoArr, setPhotoArr] = useState([{
@@ -35,14 +40,16 @@ export default function App() {
         content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\""
     },])
 
-    return (<div className="w3-content">
-        {photoArr.map((photo, index) => {
-            return (
-                <Photo
-                    key={index}
-                    photo={photo}>
-                </Photo>
-            )
-        })}
-    </div>)
+    return (<BrowserRouter>
+        <Routes>
+            <Route path="/" element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="/album" element={<PhotoList photoArr={photoArr} />} />
+                <Route path="/blogs" element={<Blogs />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="*" element={<NoPage />} />
+            </Route>
+        </Routes>
+    </BrowserRouter>
+    )
 }
