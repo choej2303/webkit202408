@@ -1,0 +1,14 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+
+###
+POST http://localhost:5000/todo
+Content-Type: application/json
+
+{
+  "title": "새 할 일"
+}
+###
