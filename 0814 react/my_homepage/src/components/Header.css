@@ -1,0 +1,14 @@
+.header {
+    text-align: center;
+}
+
+.header-link {
+    margin: 0 5px;
+    text-decoration: none;
+    color: black;
+    display: inline-block;
+    width: 50px;
+}
+.header-link:hover {
+    font-weight: bold;
+}

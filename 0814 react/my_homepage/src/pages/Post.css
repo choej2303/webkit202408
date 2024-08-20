@@ -1,0 +1,22 @@
+.post-container {
+    width: 60%;
+    height: 90vh;
+    margin: 20px auto;
+    padding: 10px;
+}
+
+.postBtn button {
+    border: 1px #ccc solid;
+    border-radius: 5px;
+    padding: 10px;
+    background: white;
+    float: right;
+}
+
+.post {
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 5px;
+    border: 1px #ccc solid;
+}

@@ -14,7 +14,7 @@ function App() {
 
     const foodItems = [
         {
-            src: "./img/img.png",
+            src: "./img/todoList-img.png",
             alt: "Sandwich",
             title: "The Perfect Sandwich, A Real NYC Classic",
             description: "Just some random text, lorem ipsum text praesent tincidunt ipsum lipsum."
