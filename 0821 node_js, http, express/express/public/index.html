@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .saramList {
+            border-collapse: collapse;
+        }
+
+        .saramList th, .saramList td {
+            border: 1px solid gray;
+            padding: 5px;
+        }
+
+        .saramList thead {
+            background-color: orange;
+        }
+    </style>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script>
+        $(document).ready(function () {
+            function getSaram() {
+                $.ajax('http://localhost:3000/saram', {
+                    success: (data) => {
+                        let tbody = $('tbody')
+                        tbody.empty()
+                        data.forEach(item => {
+                            tbody.append(
+                                `<tr data-no="${item.no}">
+<td><input type="checkbox"></td>
+<td>${item.no}</td>
+<td>${item.name}</td>
+<td>${item.dept}</td>
+<td>${item.grade}</td>
+<td><button>edit</button></td>
+<td><button>delete</button></td>
+</tr>`
+                            )
+                        })
+                    }
+                })
+            }
+
+// Edit 버튼 클릭 이벤트 핸들러
+            $('tbody').on('click', 'button', function() {
+                let tr = $(this).closest('tr');
+                let no = tr.data('no');
+
+                if ($(this).text() === 'edit') {
+                    // Edit 버튼 클릭 시
+                    let name = tr.find('td:eq(2)').text();
+                    let dept = tr.find('td:eq(3)').text();
+                    let grade = tr.find('td:eq(4)').text();
+
+                    // td를 인풋 필드로 변환
+                    tr.find('td:eq(2)').html(`<input type="text" value="${name}" class="edit-name">`);
+                    tr.find('td:eq(3)').html(`<input type="text" value="${dept}" class="edit-dept">`);
+                    tr.find('td:eq(4)').html(`<input type="text" value="${grade}" class="edit-grade">`);
+
+                    // Edit 버튼을 Save 버튼으로 변경
+                    $(this).text('Save');
+                } else if ($(this).text() === 'Save') {
+                    // Save 버튼 클릭 시
+                    let updatedName = tr.find('.edit-name').val();
+                    let updatedDept = tr.find('.edit-dept').val();
+                    let updatedGrade = tr.find('.edit-grade').val();
+
+                    // 서버에 PUT/PATCH 요청으로 업데이트
+                    $.ajax({
+                        url: `http://localhost:3000/saram/${no}`,
+                        type: 'PUT', // 또는 PATCH
+                        data: JSON.stringify({ name: updatedName, dept: updatedDept, grade: updatedGrade }),
+                        contentType: 'application/json',
+                        success: function(response) {
+                            // 업데이트가 성공하면, 다시 텍스트로 변환
+                            tr.find('td:eq(2)').text(updatedName);
+                            tr.find('td:eq(3)').text(updatedDept);
+                            tr.find('td:eq(4)').text(updatedGrade);
+
+                            // Save 버튼을 다시 Edit 버튼으로 변경
+                            $(this).text('edit');
+                        }.bind(this),
+                        error: function(error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            });
+
+
+// Delete 버튼 클릭 이벤트 핸들러
+            $('tbody').on('click', 'button:contains("delete")', function() {
+                if (confirm('정말 삭제하시겠습니까?')) {
+                    let tr = $(this).closest('tr');
+                    let no = tr.data('no');
+
+                    // 서버에 DELETE 요청 보내기
+                    $.ajax({
+                        url: `http://localhost:3000/saram/${no}`,
+                        type: 'DELETE',
+                        success: function(response) {
+                            tr.remove(); // 삭제된 행을 클라이언트에서도 제거
+                        },
+                        error: function(error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            });
+
+
+            $('#postBtn').click(function (e) {
+                e.preventDefault();
+
+                let formData = {
+                    name: $('#name').val(),
+                    dept: $('#dept').val(),
+                    grade: $('#grade').val()
+                };
+
+                $.ajax({
+                    url: 'http://localhost:3000/saram',
+                    type: 'POST',
+                    data: JSON.stringify(formData),
+                    contentType: 'application/json',
+                    success: function(response) {
+                        // 성공적으로 전송 후 처리
+                        getSaram();  // 새로운 목록을 가져오는 예시
+                    },
+                    error: function(error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+
+            getSaram()
+        })
+    </script>
+</head>
+<body>
+<form>
+    <label for="name">이름</label>
+    <input id="name" type="text">
+    <br>
+    <label for="dept">부서</label>
+    <input id="dept" type="text">
+    <br>
+    <label for="grade">직책</label>
+    <input id="grade" type="text">
+    <br>
+    <br>
+    <input type="submit" value="새 사원 추가" id="postBtn">
+</form>
+<hr>
+<button id="delSelect">선택 삭제</button>
+<label for="search">| 검색:</label>
+<select id="searchOtp" name="search">
+    <option value="name">이름</option>
+    <option value="dept">부서</option>
+    <option value="grade">직급</option>
+</select>
+<input id="search" type="text">
+<table class="saramList">
+    <thead>
+    <tr>
+        <th>선택</th>
+        <th>번호</th>
+        <th>사원명</th>
+        <th>부서</th>
+        <th>직급</th>
+        <th>수정</th>
+        <th>삭제</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+</body>
+</html>
